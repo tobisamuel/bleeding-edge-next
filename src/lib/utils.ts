@@ -13,3 +13,12 @@ export function getYearFromDate(dateString: string) {
     return "Invalid Date";
   }
 }
+
+export const formatAmountWithCommas = (inputAmount: number) => {
+  const amount = inputAmount?.toLocaleString("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  });
+
+  return amount;
+};
