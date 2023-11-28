@@ -2,10 +2,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
-import { formatAmountWithCommas } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import Status from "@/components/Status";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatAmountWithCommas } from "@/lib/utils";
 
 export type Transaction = {
   ref: string;
