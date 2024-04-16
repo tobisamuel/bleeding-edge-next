@@ -1,4 +1,11 @@
-import { GenresResponse } from "@/types";
+export type Genres = {
+  id: number;
+  name: string;
+};
+
+export type GenresResponse = {
+  genres: Genres[];
+};
 
 const token = process.env.NEXT_PUBLIC_API_KEY;
 
