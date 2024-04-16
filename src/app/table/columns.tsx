@@ -12,7 +12,7 @@ export type Transaction = {
   createdAt: string;
   desc: string;
   icon: null | string;
-  amount: string;
+  amount: number;
   transactionType: string;
   status: string;
   data: {
@@ -31,25 +31,6 @@ export type Transaction = {
 };
 
 export const columns: ColumnDef<Transaction>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "desc",
     header: "Description",
@@ -85,7 +66,13 @@ export const columns: ColumnDef<Transaction>[] = [
       const amount = parseFloat(row.getValue("amount"));
       const formatted = formatAmountWithCommas(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="font-medium">{formatted}</div>;
+    },
+    aggregationFn: "sum",
+    aggregatedCell: ({ getValue }) => {
+      const formatted = formatAmountWithCommas(getValue<number>());
+
+      return <div className="font-medium">{formatted}</div>;
     },
   },
   {
@@ -93,9 +80,12 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Date",
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
-      const formatted = dayjs(date).locale("en").format("DD MMM YYYY h:mmA");
+      const formatted = dayjs(date).locale("en").format("DD MMM YYYY");
 
       return <div>{formatted}</div>;
+    },
+    getGroupingValue: ({ createdAt }) => {
+      return dayjs(createdAt).locale("en").format("DD MMM YYYY");
     },
   },
   {

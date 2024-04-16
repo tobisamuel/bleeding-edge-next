@@ -1,9 +1,9 @@
 "use client";
 
+import { columns, Transaction } from "./columns";
 import { DataTable } from "./data-table";
-import { Transaction, columns } from "./columns";
 
-const data: Transaction[] = [
+const data = [
   {
     ref: "zxE7ybn7lXWh",
     createdAt: "2023-09-19 09:47:08",
@@ -336,10 +336,15 @@ const data: Transaction[] = [
   },
 ];
 
+const formattedData = data.map((item) => ({
+  ...item,
+  amount: Number(item.amount),
+}));
+
 export default function TablePage() {
   return (
-    <div className="px-4 py-10">
-      <DataTable columns={columns} data={data} />
+    <div className="px-16 py-10">
+      <DataTable columns={columns} data={formattedData} />
     </div>
   );
 }

@@ -1,20 +1,25 @@
 "use client";
 
-import { ArrowUpDown } from "lucide-react";
-import { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
+  getGroupedRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  GroupingState,
+  Row,
   SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
+import { useState } from "react";
 
+import { DataTablePagination } from "@/components/DataTablePagination";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -31,7 +36,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/components/DataTablePagination";
+import { cn } from "@/lib/utils";
+
+import { Transaction } from "./columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -45,6 +52,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [grouping, setGrouping] = useState<GroupingState>(["createdAt"]);
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
@@ -53,15 +61,21 @@ export function DataTable<TData, TValue>({
     state: {
       columnFilters,
       columnVisibility,
+      expanded: true,
+      grouping,
       rowSelection,
       sorting,
     },
+    getRowCanExpand: () => true,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onGroupingChange: setGrouping,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -115,13 +129,15 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+                    <TableHead key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder ? null : (
+                        <>
+                          {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
+                        </>
+                      )}
                     </TableHead>
                   );
                 })}
@@ -131,21 +147,42 @@ export function DataTable<TData, TValue>({
 
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                return (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn({
+                            "bg-muted/50":
+                              cell.getIsGrouped() || cell.getIsAggregated(),
+                          })}
+                        >
+                          {cell.getIsGrouped()
+                            ? flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )
+                            : cell.getIsAggregated()
+                            ? flexRender(
+                                cell.column.columnDef.aggregatedCell ??
+                                  cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )
+                            : cell.getIsPlaceholder()
+                            ? null // For cells with repeated values, render null
+                            : // Otherwise, just render the regular cell
+                              flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
@@ -183,3 +220,38 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
+
+export const categorizeAndAggregate = (transactions: Transaction[]) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set hours to midnight for accurate comparison
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const last7Days = new Date(today);
+  last7Days.setDate(today.getDate() - 6); // Adjust for the last 7 days
+
+  // Categorize and aggregate transactions
+  const aggregatedData = transactions.reduce<{
+    today: Transaction[];
+    yesterday: Transaction[];
+    last7Days: Transaction[];
+  }>(
+    (result, transaction) => {
+      const transactionDate = new Date(transaction.createdAt);
+
+      if (transactionDate >= today) {
+        result.today.push(transaction);
+      } else if (transactionDate >= yesterday) {
+        result.yesterday.push(transaction);
+      } else if (transactionDate >= last7Days) {
+        result.last7Days.push(transaction);
+      }
+
+      return result;
+    },
+    { today: [], yesterday: [], last7Days: [] },
+  );
+
+  return aggregatedData;
+};
