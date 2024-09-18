@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [grouping, setGrouping] = useState<GroupingState>(["createdAt"]);
+  // const [grouping, setGrouping] = useState<GroupingState>(["createdAt"]);
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
@@ -62,14 +62,14 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       expanded: true,
-      grouping,
+      // grouping,
       rowSelection,
       sorting,
     },
     getRowCanExpand: () => true,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onGroupingChange: setGrouping,
+    // onGroupingChange: setGrouping,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -165,18 +165,18 @@ export function DataTable<TData, TValue>({
                                 cell.getContext(),
                               )
                             : cell.getIsAggregated()
-                            ? flexRender(
-                                cell.column.columnDef.aggregatedCell ??
-                                  cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )
-                            : cell.getIsPlaceholder()
-                            ? null // For cells with repeated values, render null
-                            : // Otherwise, just render the regular cell
-                              flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
+                              ? flexRender(
+                                  cell.column.columnDef.aggregatedCell ??
+                                    cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )
+                              : cell.getIsPlaceholder()
+                                ? null // For cells with repeated values, render null
+                                : // Otherwise, just render the regular cell
+                                  flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext(),
+                                  )}
                         </TableCell>
                       );
                     })}

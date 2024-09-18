@@ -9,32 +9,38 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@radix-ui/react-checkbox": "^1.0.4",
-    "@radix-ui/react-dropdown-menu": "^2.0.5",
-    "@radix-ui/react-select": "^1.2.2",
-    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-checkbox": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-slot": "^1.1.0",
     "@tanstack/react-table": "^8.16.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dayjs": "^1.11.10",
-    "lucide-react": "^0.368.0",
-    "next": "14.2.1",
-    "react": "^18",
-    "react-dom": "^18",
+    "lucide-react": "^0.438.0",
+    "next": "15.0.0-rc.0",
+    "react": "19.0.0-rc-a99d8e8d-20240916",
+    "react-dom": "19.0.0-rc-a99d8e8d-20240916",
     "tailwind-merge": "^2.2.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
-    "@tailwindcss/postcss": "4.0.0-alpha.14",
+    "@tailwindcss/postcss": "4.0.0-alpha.24",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "eslint": "^8",
-    "eslint-config-next": "14.2.1",
+    "eslint-config-next": "15.0.0-rc.0",
     "postcss": "^8",
-    "prettier-plugin-tailwindcss": "^0.5.14",
-    "tailwindcss": "4.0.0-alpha.14",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "tailwindcss": "4.0.0-alpha.24",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@rc",
+      "@types/react-dom": "npm:types-react-dom@rc"
+    }
   }
 }
