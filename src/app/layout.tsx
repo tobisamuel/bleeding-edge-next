@@ -1,8 +1,11 @@
-import "./globals.css";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 
-const dm_sans = DM_Sans({ subsets: ["latin"] });
+import Providers from "@/components/providers";
+
+import "./globals.css";
+
+const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Bleeding Edge Next",
@@ -11,12 +14,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <body className={dm_sans.className}>{children}</body>
+      <body className={`${dmSans.className} antialiased`}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

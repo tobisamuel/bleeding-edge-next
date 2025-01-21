@@ -8,17 +8,17 @@ const data = Array.from({ length: 7 }, (_, i) => ({
 export default function ContainerQueries() {
   return (
     <div className="@container/layout p-8">
-      <ul className="grid @3xl/layout:grid-cols-2 @5xl/layout:grid-cols-4 gap-4 @5xl/layout:gap-8">
+      <ul className="grid gap-4 @3xl/layout:grid-cols-2 @5xl/layout:grid-cols-4 @5xl/layout:gap-8">
         {data.map((item) => (
           <li
             key={item.id}
             className="@container/article @3xl/layout:first:col-span-2 @5xl/layout:first:col-span-4 @5xl/layout:[&:nth-child(2)]:col-span-2 @5xl/layout:[&:nth-child(3)]:col-span-2"
           >
-            <article className="grid gap-4 @lg/article:grid-cols-3 @3xl/article:grid-cols-2 @5xl/layout:gap-8 @3xl/article:text-xl">
+            <article className="grid gap-4 @lg/article:grid-cols-3 @3xl/article:grid-cols-2 @3xl/article:text-xl @5xl/layout:gap-8">
               <div className="h-48 w-full bg-slate-400"></div>
 
               <div className="@lg/article:col-span-2 @3xl/article:col-span-1">
-                <h3 className="font-bold text-3xl">{item.title}</h3>
+                <h3 className="text-3xl font-bold">{item.title}</h3>
                 <p>{item.description}</p>
               </div>
             </article>
